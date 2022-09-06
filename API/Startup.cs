@@ -1,6 +1,10 @@
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using Application.Activities;
+using AutoMapper;
+using Application.Core;
 
 namespace API
 {
@@ -35,6 +39,10 @@ namespace API
                     policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
                 });
             });
+
+            services.AddMediatR(typeof(List.Handler).Assembly);
+
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         }
 
 
