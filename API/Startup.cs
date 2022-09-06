@@ -1,6 +1,10 @@
 using Microsoft.OpenApi.Models;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
+using Application.Activities;
+using AutoMapper;
+using Application.Core;
 
 namespace API
 {
@@ -28,6 +32,17 @@ namespace API
             {
                 opt.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddCors(opt => {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+                });
+            });
+
+            services.AddMediatR(typeof(List.Handler).Assembly);
+
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
         }
 
 
@@ -45,6 +60,8 @@ namespace API
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
